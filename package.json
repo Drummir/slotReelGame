@@ -17,9 +17,7 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
-  "dependencies": {
-    "@pixi/app": "^5.3.3"
-  },
+  "dependencies": {},
   "scripts": {
     "production": "webpack --mode production --config webpack.config.prod.js",
     "build": "webpack --mode development --config webpack.config.dev.js",
