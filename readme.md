@@ -1,4 +1,6 @@
-npm install
-npm start
-================
-In your web browser, enter 127.0.0.1:3000
+# Launch
+### Ввести в консоле:
+- npm install
+- npm start
+### В браузере ввести следующее для просмотра страницы:
+- 127.0.0.1:3000
