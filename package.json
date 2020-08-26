@@ -17,7 +17,9 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "gsap": "^3.5.0"
+  },
   "scripts": {
     "production": "webpack --mode production --config webpack.config.prod.js",
     "build": "webpack --mode development --config webpack.config.dev.js",
