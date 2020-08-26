@@ -56,7 +56,7 @@ export default class slotReelGame {
         this.lines[i][j].position.set(100 * (i + 1), 30 + j * 70);
         this.scene.addChild(this.lines[i][j]);
       }
-
+      // Animation
       gsap.to(this.lines[i], {y: 600, duration: 1 + i * 0.2, repeat: -1, yoyo: true });
     }
   } 
