@@ -10,9 +10,14 @@ PixiPlugin.registerPIXI(PIXI);
 
 let Sprite    = PIXI.Sprite,
     loader    = PIXI.Loader.shared;
-    
-export default class slotReelGame {
 
+/**
+ * Class slotReelGame
+ */
+export default class slotReelGame {
+  /**
+   * slotReelGame constructor.
+   */
   constructor() {
     if(!document.body) {
       throw new Error('window is not ready');
@@ -44,13 +49,17 @@ export default class slotReelGame {
     this.configureRandomLine();
   }
 
+  /**
+   * Configures a random line.
+   */
   configureRandomLine() {
     // Загрузка текстур
-    const sheetID = loader.resources['./assets/images/spritesheet.json'].spritesheet;
-    const reel = new Reel(sheetID);
+    const sheetId = loader.resources['./assets/images/spritesheet.json'].spritesheet;
+    const reel = new Reel(sheetId);
 
-    for (let i = 0; i <= 5; i++) {
-      this.lines[i] = reel.randomFill();
+    // Add 5 reels from 10 numbers
+    for (let i = 0; i <= 4; i++) {
+      this.lines[i] = reel.getArrayOfRandomSprites();
 
       for (let j = 0; j <= 9; j++) {
         this.lines[i][j].position.set(100 * (i + 1), 30 + j * 70);
@@ -62,12 +71,25 @@ export default class slotReelGame {
   } 
 }
 
+/**
+ * Class Reel
+ */
 class Reel {
-  constructor(sheetID) {
-    this.sheetID = sheetID;
+  /**
+   * Reel constructor. 
+   * 
+   * @param {number} sheetId Sheet ID
+   */
+  constructor(sheetId) {
+    this.sheetID = sheetId;
   }
 
-  randomFill() {
+  /**
+   * Returns an array of random sprites.
+   * 
+   * @returns {Sprite[]}
+   */
+  getArrayOfRandomSprites() {
     const arr = [];
     const a = [...Array(10).keys()];  // a === [0, 1, 2, .... , 9]
     for(let i = 0; i <= 9; i++) {
