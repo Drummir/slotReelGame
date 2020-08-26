@@ -19,11 +19,7 @@ export default class slotReelGame {
     };
 
     this.numberOfReel = [];
-    this.lineOne = [];
-    this.lineTwo = [];
-    this.lineThree = [];
-    this.lineFour = [];
-    this.lineFive = []; 
+    this.lines = []
   }
 
   init() {
@@ -49,67 +45,43 @@ export default class slotReelGame {
   }
 
   configureRandomLine() {
-    this.lineOne = new Reel().arr;
-    this.lineTwo = new Reel().arr;
-    this.lineThree = new Reel().arr;
-    this.lineFour = new Reel().arr;
-    this.lineFive = new Reel().arr;
+    // Загрузка текстур
+    const sheetID = loader.resources['./assets/images/spritesheet.json'].spritesheet;
+    const reel = new Reel(sheetID);
 
-    for(let i = 0; i < 10; i++) {
-      this.lineOne[i].position.set(100, 30 + i * 70);
-      this.scene.addChild(this.lineOne[i]);
-      this.lineTwo[i].position.set(200, 30 + i * 70);
-      this.scene.addChild(this.lineTwo[i]);
-      this.lineThree[i].position.set(300, 30 + i * 70);
-      this.scene.addChild(this.lineThree[i]);
-      this.lineFour[i].position.set(400, 30 + i * 70);
-      this.scene.addChild(this.lineFour[i]);
-      this.lineFive[i].position.set(500, 30 + i * 70);
-      this.scene.addChild(this.lineFive[i]);
+    for (let i = 0; i <= 5; i++) {
+      this.lines[i] = reel.randomFill();
+
+      for (let j = 0; j <= 9; j++) {
+        this.lines[i][j].position.set(100 * (i + 1), 30 + j * 70);
+        this.scene.addChild(this.lines[i][j]);
+      }
+
+      gsap.to(this.lines[i], {y: 600, duration: 1 + i * 0.2, repeat: -1, yoyo: true });
     }
-
-    const time = 1;
-    gsap.to(this.lineFive, {
-      y: 600, duration: time, repeat: -1, yoyo: true,
-    });
-
-    gsap.to(this.lineFour, {
-      y: 600, duration: time + 0.2, repeat: -1, yoyo: true,
-    });
-    gsap.to(this.lineThree, {
-      y: 600, duration: time + 0.4, repeat: -1, yoyo: true,
-    });
-    gsap.to(this.lineTwo, {
-      y: 600, duration: time + 0.6, repeat: -1, yoyo: true,
-    });
-    gsap.to(this.lineOne, {
-      y: 600, duration: time + 0.8, repeat: -1, yoyo: true,
-    });
-    //this.lineOne[5].visible = false;
   } 
 }
 
-class Reel extends slotReelGame {
-  constructor() {
-    super();
-    this.arr = [];
-    this.randomFill();
+class Reel {
+  constructor(sheetID) {
+    this.sheetID = sheetID;
   }
 
   randomFill() {
-    // Загрузка текстур
-    this.sheetID = loader.resources['./assets/images/spritesheet.json'].spritesheet;
-
-    let a = [...Array(10).keys()];
-    for(let i = 0; i < 10; i++) {
+    const arr = [];
+    const a = [...Array(10).keys()];  // a === [0, 1, 2, .... , 9]
+    for(let i = 0; i <= 9; i++) {
          //Случайно выбираем индекс из оставшихся в массиве индексов
-        let index = Math.floor(Math.random() * a.length);
+        const index = Math.floor(Math.random() * a.length);
         //Определяем число
-        this.arr[i] = new Sprite(this.sheetID.textures[`${a[index]}.png`]);
-        this.arr[i].anchor.set(0.5);
-        this.arr[i].scale.set(0.4);
+        const sprite = new Sprite(this.sheetID.textures[`${a[index]}.png`]);
+        sprite.anchor.set(0.5);
+        sprite.scale.set(0.4);
+        arr[i] = sprite;
         //Отбрасываем использованный индекс
-        a.splice(index,1);  
+        a.splice(index, 1);  
     }
+
+    return arr;
   }
 }
