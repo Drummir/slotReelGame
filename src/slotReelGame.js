@@ -78,12 +78,12 @@ export default class slotReelGame {
       for (let j = 0; j <= 9; j++) {
         this.lines[i][j].position.set(100 * (i), 0);
         this.containerScene.addChild(this.lines[i][j]);
-        // this.tweens[i] = [];
-        // this.tweens[i][j] = gsap.fromTo(this.lines[i][j], {y: -300}, {y: 300, duration: 1, repeat: -1, paused: true, ease: "linear"});
-        // this.tweens[i][j].progress(progressPerSymbol * (j + 1));
-        gsap
-          .fromTo(this.lines[i][j], {y: -300}, {y: 300, duration: 2 - (i * 0.2), repeat: -1, ease: "linear"})
-          .progress(progressPerSymbol * (j + 1));
+        this.tweens[i] = [];
+        this.tweens[i][j] = gsap.fromTo(this.lines[i][j], {y: -300}, {y: 300, duration: 2 - (i * 0.2), repeat: -1, paused: true, ease: "linear"});
+        this.tweens[i][j].progress(progressPerSymbol * (j + 1));
+        // gsap
+        //   .fromTo(this.lines[i][j], {y: -300}, {y: 300, duration: 2 - (i * 0.2), repeat: -1, paused: true ,ease: "linear"})
+        //   .progress(progressPerSymbol * (j + 1));
         // console.log(progressPerSymbol * (j + 1));
         //console.log(`width = ${this.lines[i][j].width} + position.x = ${this.lines[i][j].position.x} = ${this.lines[i][j].width + this.lines[i][j].position.x}`);
       }
@@ -94,44 +94,97 @@ export default class slotReelGame {
   } 
 
   configureButton() {
-    this.btn = new Button(BUTTONS.SPINBUTTON);
-    this.btn.alpha = 0.8;
-    this.btn2 = new Button(BUTTONS.SPINBUTTONSTROKE);
-    this.scene.addChild(this.btn2);
-    this.scene.addChild(this.btn);
+    this.btnStart = new Button(BUTTONS.SPINBUTTON);
+    this.btnStop = new Button(BUTTONS.SPINBUTTON);
+    this.btnStartFake = new Button(BUTTONS.SPINBUTTONSTROKE);
+
+    this.btnStart.alpha = 0.8;
+    this.btnStop.alpha = 0.8;
+    this.btnStart.visible = true;
+    this.btnStop.visible = false;
+    // this.btnStart.interactive = true;
+    // this.btnStop.interactive = false;
+
+
+    this.scene.addChild(this.btnStartFake);
+    this.scene.addChild(this.btnStop);
+    this.scene.addChild(this.btnStart);
+    
+   
     
 
 
 
-    this.btn
-      .on('pointerdown',      () => this.onClick(this.btn))          // При нажатии
-      .on('pointerup',        () => this.onClickAfter(this.btn))     // При отпускании
-      .on('pointerupoutside', () => this.onClickAfter(this.btn))     // При отпускании за пределами границы кнопки
-      .on('pointerover',      () => this.onPointerOver(this.btn))    // Курсор на кнопке
-      .on('pointerout',       () => this.onPointerOut(this.btn));    // За кнопкой
-  }
+    this.btnStart
+      .on('pointerdown',      this.onClick.bind(this, this.btnStop, true))          // При нажатии
+      .on('pointerup',        this.onClickAfter.bind(this))     // При отпускании
+      .on('pointerupoutside', this.onClickAfter.bind(this))     // При отпускании за пределами границы кнопки
+      .on('pointerover',      this.onPointerOver.bind(this))    // Курсор на кнопке
+      .on('pointerout',       this.onPointerOut.bind(this));    // За кнопкой
 
-  onClick(btn) {
-    console.log('click');
+    this.btnStop
+      .on('pointerdown',      this.onClick.bind(this, this.btnStart, false))          // При нажатии
+      .on('pointerup',        this.onClickAfter.bind(this))     // При отпускании
+      .on('pointerupoutside', this.onClickAfter.bind(this))     // При отпускании за пределами границы кнопки
+      .on('pointerover',      this.onPointerOver.bind(this))    // Курсор на кнопке
+      .on('pointerout',       this.onPointerOut.bind(this));    // За кнопкой
+
+
   }
-  onClickAfter(btn) {
+  
+
+  onClick(secondBtn,bool) {
+    //console.log('click', this.btnStart);
+    if(bool) {
+      console.log("Start");
+      this.btnStart.visible = !bool;
+      secondBtn.visible = bool;
+    } else {
+      console.log("Stop");
+      secondBtn.visible = !bool;
+      this.btnStop.visible = bool;
+    }
+    
+  }
+  onClickAfter() {
     console.log('After');
+    console.log(this.btnStop.visible);
+    if(this.btnStop.visible) {
+      for(let i = 0; i <= 4; i++) {
+        for(let j = 0; j <= 9; j++) {
+          this.tweens[i][j] = gsap
+            .fromTo(this.lines[i][j], { y: -300 }, { y: 300, duration: 2 - (i * 0.2), repeat: -1, ease: "linear" })
+            .progress((58.4 / 600) * (j + 1));
+        }
+      }
+    } else {
+      for(let i = 0; i <= 4; i++) {
+        for(let j = 0; j <= 9; j++) {
+          this.tweens[i][j].pause();
+          // gsap
+          //   .fromTo(this.lines[i][j], { y: -300 }, { y: 300, duration: 2 - (i * 0.2), pause,  ease: "linear" })
+          //   .progress((58.4 / 600) * (j + 1));
+        }
+      }
+    }
     
   }
-  onPointerOver(btn) {
-    console.log('Over');
-    btn.alpha = 1.2;
+  onPointerOver() {
+    console.log('Over', );
+    this.btnStart.alpha = 1.2;  
+    this.btnStop.alpha = 1.2;
   }
-  onPointerOut(btn) {
+  onPointerOut() {
     console.log('Out');
-    btn.alpha = 0.8;
+    this.btnStart.alpha = 0.8;
+    this.btnStop.alpha = 0.8;
   }
   
   configureMaskOnContainer() {
     const mask = new PIXI.Graphics;
-    mask.pivot.set(0, 250);
+    mask.pivot.set(0, 200);
     mask.beginFill(0xff0000, 1);
-    mask.drawRect(-33, 0, 457, 400);
+    mask.drawRect(-33, 0, 457, 250);
     mask.endFill();
     this.containerScene.mask = mask;
     this.containerScene.addChild(mask);
